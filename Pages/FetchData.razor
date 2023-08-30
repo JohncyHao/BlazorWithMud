@@ -1,0 +1,37 @@
+﻿@page "/fetchdata"
+@using BlazorWithMud.Data
+@using System.Net.Http.Json
+@inject WeatherForecastService ForecastService
+
+
+<PageTitle>Weather forecast</PageTitle>
+
+<h1>Mud Blazor Table</h1>
+
+
+<MudTable Items="@forecasts.Take(4)" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@_loading" LoadingProgressColor="Color.Info">
+    <HeaderContent>
+        <MudTh>Date</MudTh>
+        <MudTh>Temp. (C)</MudTh>
+        <MudTh>Temp. (F)</MudTh>
+        <MudTh>Summary</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="Date">@context.Date.ToShortDateString()</MudTd>
+        <MudTd DataLabel="TemperatureC">@context.TemperatureC</MudTd>
+        <MudTd DataLabel="TemperatureF">@context.TemperatureF</MudTd>
+        <MudTd DataLabel="Summary">@context.Summary</MudTd>
+    </RowTemplate>
+</MudTable>
+
+
+@code {
+    private IEnumerable<WeatherForecast> forecasts = new List<WeatherForecast>();
+    private bool _loading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateOnly.FromDateTime(DateTime.Now));
+        _loading = false;
+    }
+}
